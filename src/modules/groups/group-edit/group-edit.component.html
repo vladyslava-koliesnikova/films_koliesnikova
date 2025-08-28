@@ -1,0 +1,4 @@
+<h2>Editation of group</h2>
+@if(group) {
+  <app-group-edit-child [groupToEdit]="group" (toSave)="saveGroup($event)"></app-group-edit-child>
+}

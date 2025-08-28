@@ -1,0 +1,30 @@
+<mat-form-field>
+  <mat-label>My chat name</mat-label>
+  <input matInput [(ngModel)]="name" name="name" required #nameModel="ngModel" autofocus (keyup.enter)="connect()" #nameInput>
+  <mat-hint>Your name in chat</mat-hint>
+  <mat-error>Name is required</mat-error>
+</mat-form-field>
+<button mat-fab extended (click)="connect()" [disabled]="connected || nameModel.invalid">
+  <mat-icon>link</mat-icon>
+  Connect
+</button>
+<button mat-fab extended (click)="disconnect()" [disabled]="!connected">
+  <mat-icon>link_off</mat-icon>
+  Disconnect
+</button>
+@if (connected) {
+  <div>
+    <mat-form-field>
+      <mat-label>Your message</mat-label>
+      <input matInput [(ngModel)]="msgToSend" name="msgToSend" #msgInput (keyup.enter)="sendMessage()">
+    </mat-form-field>
+    <button mat-button extended (click)="sendMessage()">
+      Send
+    </button>
+    <mat-list role="list">
+      @for(msg of messages; track $index) {
+        <mat-list-item role="listitem">{{msg}}</mat-list-item>
+      }
+    </mat-list>
+  </div>
+}

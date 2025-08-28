@@ -1,0 +1,18 @@
+<mat-toolbar>
+  <span>FILMS APP</span>
+  <a routerLink="/users" routerLinkActive="active" mat-button><mat-icon>person</mat-icon> Users</a>
+  <a routerLink="/extended-users" routerLinkActive="active" mat-button><mat-icon>person</mat-icon> Extended users</a>
+  <a routerLink="/groups" routerLinkActive="active" mat-button><mat-icon>group</mat-icon> Groups</a>
+  <a routerLink="/films" routerLinkActive="active" mat-button><mat-icon>theaters</mat-icon> Films</a>
+  <a routerLink="/chat" routerLinkActive="active" mat-button><mat-icon>chat</mat-icon> Chat</a>
+  <span class="spacer"></span>
+  
+  @let userName = userNameS();
+  <span>{{userName}}</span>
+  @if(userName) {
+    <button mat-button (click)="logout()"><mat-icon>logout</mat-icon> Logout</button>
+  } @else {
+    <a routerLink="/register" routerLinkActive="active" mat-button><mat-icon>person_add</mat-icon> Register</a>
+    <a routerLink="/login" routerLinkActive="active" mat-button><mat-icon>login</mat-icon> Login</a>
+  }
+</mat-toolbar>

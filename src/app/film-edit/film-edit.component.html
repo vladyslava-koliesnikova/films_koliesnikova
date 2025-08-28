@@ -1,0 +1,49 @@
+<form (ngSubmit)="save()" [formGroup]="filmModel">
+  <mat-card class="example-card" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>{{ titleS() }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Názov</mat-label>
+        <input matInput formControlName="nazov">
+        <mat-error *ngIf="nazov.touched && nazov.errors?.['required']">
+          Názov je povinný
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Rok</mat-label>
+        <input matInput type="number" formControlName="rok">
+        <mat-error *ngIf="rok.touched && rok.errors">
+          <ng-container *ngIf="rok.errors['required']">
+            Rok je povinný
+          </ng-container>
+          <ng-container *ngIf="rok.errors['min']">
+            Rok nemôže byť menší ako {{ rok.errors['min'].min }}
+          </ng-container>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Slovenský názov</mat-label>
+        <input matInput formControlName="slovenskyNazov">
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>AFI 1998</mat-label>
+        <input matInput type="number" formControlName="afi1998">
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>AFI 2007</mat-label>
+        <input matInput type="number" formControlName="afi2007">
+      </mat-form-field>
+
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button type="submit" mat-raised-button color="primary" [disabled]="filmModel.invalid">
+        {{ filmId ? 'Save film' : 'Add film' }}
+      </button>
+      <button type="button" mat-stroked-button color="warn" (click)="onCancel()">Cancel</button>
+    </mat-card-actions>
+  </mat-card>
+</form>

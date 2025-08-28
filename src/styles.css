@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.errorMessage .mdc-button__label {
+  color:red;
+}
+
+.successMessage .mdc-button__label {
+  color:greenyellow;
+}
+
+.infoMessage .mdc-button__label {
+  color:#6495ed;
+}

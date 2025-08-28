@@ -1,0 +1,6 @@
+<nav mat-tab-nav-bar [tabPanel]="tabPanel">
+  <a mat-tab-link routerLink="./" routerLinkActive="active">Groups list</a>
+  <a mat-tab-link routerLink="new" routerLinkActive="active">New group</a>
+</nav>
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+<router-outlet></router-outlet>
