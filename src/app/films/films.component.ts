@@ -8,7 +8,7 @@ import { switchMap, tap } from 'rxjs';
 import { L, P, Q } from '@angular/cdk/keycodes';
 import { MatSort } from '@angular/material/sort';
 import { UsersService } from '../../services/users.service';
-import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 @Component({
@@ -22,9 +22,9 @@ export default class FilmsComponent implements AfterViewInit {
   usersService = inject(UsersService);
   router = inject(Router);
 
-  columnsToDisplayS = computed(() => this.usersService.loggedUserS() 
-                   ? ['id', 'nazov', 'rok','slovenskyNazov', 'afi1998', 'afi2007', 'actions']
-                   : ['id', 'nazov', 'rok', 'actions']);
+  columnsToDisplayS = computed(() => this.usersService.loggedUserS()
+    ? ['id', 'nazov', 'rok', 'slovenskyNazov', 'afi1998', 'afi2007', 'actions']
+    : ['id', 'nazov', 'rok', 'actions']);
   paginatorS = viewChild.required<MatPaginator>(MatPaginator);
   sortHeaderS = viewChild.required<MatSort>(MatSort);
 
@@ -34,12 +34,12 @@ export default class FilmsComponent implements AfterViewInit {
   indexToS = signal<number | undefined>(5);
   searchS = signal<string | undefined>(undefined);
 
-  queryS = computed(() => new Query(this.orderByS(), 
-                                    this.descendingS(), 
-                                    this.indexFromS(), 
-                                    this.indexToS(),
-                                    this.searchS()
-                                  ));
+  queryS = computed(() => new Query(this.orderByS(),
+    this.descendingS(),
+    this.indexFromS(),
+    this.indexToS(),
+    this.searchS()
+  ));
 
   // response$ = toObservable(this.queryS).pipe(
   //   tap(query => console.log("request:", query)),
@@ -49,7 +49,7 @@ export default class FilmsComponent implements AfterViewInit {
   // responseS = toSignal(this.response$);
   filmsResource = rxResource({
     request: () => this.queryS(),
-    loader: ({request: query}) => this.filmsService.getFilms(query.orderBy, query.descending, query.indexFrom, query.indexTo, query.search)
+    loader: ({ request: query }) => this.filmsService.getFilms(query.orderBy, query.descending, query.indexFrom, query.indexTo, query.search)
   });
 
   responseS = this.filmsResource.value;
@@ -63,8 +63,8 @@ export default class FilmsComponent implements AfterViewInit {
     this.paginatorS().page.subscribe(pageEvent => {
       console.log("Page event", pageEvent);
       this.indexFromS.set(pageEvent.pageIndex * pageEvent.pageSize);
-      this.indexToS.set(Math.min((pageEvent.pageIndex + 1) * pageEvent.pageSize, 
-                                 pageEvent.length));
+      this.indexToS.set(Math.min((pageEvent.pageIndex + 1) * pageEvent.pageSize,
+        pageEvent.length));
     });
     this.sortHeaderS().sortChange.subscribe(sortEvent => {
       console.log('Sort header event', sortEvent);
@@ -75,8 +75,8 @@ export default class FilmsComponent implements AfterViewInit {
       }
       this.descendingS.set(sortEvent.direction === "desc");
       let column = sortEvent.active;
-      if (column === 'afi1998') column='poradieVRebricku.AFI 1998';
-      if (column === 'afi2007') column='poradieVRebricku.AFI 2007';
+      if (column === 'afi1998') column = 'poradieVRebricku.AFI 1998';
+      if (column === 'afi2007') column = 'poradieVRebricku.AFI 2007';
       this.orderByS.set(column);
       this.paginatorS().firstPage();
     });
@@ -87,7 +87,7 @@ export default class FilmsComponent implements AfterViewInit {
     this.searchS.set(filter);
     this.paginatorS().firstPage();
   }
-    addFilm() {
+  addFilm() {
     this.router.navigate(['/films/new']);
   }
 }
@@ -101,5 +101,5 @@ class Query {
     public indexFrom?: number,
     public indexTo?: number,
     public search?: string
-  ) {}
+  ) { }
 }

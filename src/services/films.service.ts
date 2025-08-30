@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { catchError, Observable, EMPTY, switchMap } from 'rxjs';
+import { catchError, Observable, EMPTY } from 'rxjs';
 import { Film } from '../entities/film';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../environments/environment';
@@ -17,7 +17,6 @@ export class FilmsService {
     return this.usersService.token;
   }
 
-  
   getTokenHeader(): { headers?: { [header: string]: string }, params?: HttpParams } | undefined {
     if (!this.token) {
       return undefined;
@@ -42,18 +41,11 @@ export class FilmsService {
     );
   }
 
-  addFilm(film: Film): Observable<Film> {
+  saveFilm(film: Film): Observable<Film> {
     return this.http.post<Film>(this.url + 'films', film, this.getTokenHeader()).pipe(
       catchError(error => this.processError(error))
     );
   }
-
-
-updateFilm(id: number, film: Film): Observable<Film> {  return this.http.post<Film>(`${this.url}films`, { ...film, id }, this.getTokenHeader()).pipe(
-    catchError(error => this.processError(error))
-  );
-}
-
 
   getFilmById(id: number): Observable<Film> {
     return this.http.get<Film>(this.url + 'films/' + id, this.getTokenHeader()).pipe(
@@ -87,8 +79,6 @@ updateFilm(id: number, film: Film): Observable<Film> {  return this.http.post<Fi
     }
     return EMPTY;
   }
-
-  
 }
 
 export interface FilmsResponse {

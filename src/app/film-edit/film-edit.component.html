@@ -4,46 +4,200 @@
       <mat-card-title>{{ titleS() }}</mat-card-title>
     </mat-card-header>
 
-    <mat-card-content>
-      <mat-form-field appearance="outline" class="w-full">
+    <mat-card-content class="form-container">
+      <mat-form-field class="w-full">
         <mat-label>Názov</mat-label>
         <input matInput formControlName="nazov">
-        <mat-error *ngIf="nazov.touched && nazov.errors?.['required']">
-          Názov je povinný
-        </mat-error>
+        @if (nazov.touched && nazov.errors?.['required']) {
+        <mat-error>Názov je povinný</mat-error>
+        }
       </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full">
+
+      <mat-form-field class="w-full">
         <mat-label>Rok</mat-label>
         <input matInput type="number" formControlName="rok">
-        <mat-error *ngIf="rok.touched && rok.errors">
-          <ng-container *ngIf="rok.errors['required']">
-            Rok je povinný
-          </ng-container>
-          <ng-container *ngIf="rok.errors['min']">
-            Rok nemôže byť menší ako {{ rok.errors['min'].min }}
-          </ng-container>
+        @if (rok.touched && rok.errors) {
+        <mat-error>
+          @if (rok.errors['required']) {
+          Rok je povinný
+          }
+          @if (rok.errors['min']) {
+          Rok nemôže byť menší ako {{ rok.errors['min'].min }}
+          }
         </mat-error>
+        }
       </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full">
+
+      <mat-form-field class="w-full">
         <mat-label>Slovenský názov</mat-label>
         <input matInput formControlName="slovenskyNazov">
       </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full">
+
+      <mat-form-field class="w-full">
         <mat-label>AFI 1998</mat-label>
         <input matInput type="number" formControlName="afi1998">
       </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full">
+
+      <mat-form-field class="w-full">
         <mat-label>AFI 2007</mat-label>
         <input matInput type="number" formControlName="afi2007">
       </mat-form-field>
 
+      <div class="section">
+        <h3>Režiséri
+          <button mat-icon-button color="primary" (click)="addReziser()" type="button" title="Pridať režiséra">
+            <mat-icon>add</mat-icon>
+          </button>
+        </h3>
+
+        <div class="add-container" *ngIf="addingReziser">
+          <mat-form-field class="flex-grow">
+            <mat-label>Meno režiséra</mat-label>
+            <input matInput [(ngModel)]="newReziserMeno" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+          <mat-form-field class="flex-grow">
+            <mat-label>Priezvisko režiséra</mat-label>
+            <input matInput [(ngModel)]="newReziserPriezvisko" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+          <button mat-icon-button color="primary" (click)="confirmAddReziser()" type="button">
+            <mat-icon>check</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="cancelAddReziser()" type="button">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <div class="list-container">
+          @for (reziser of reziseri(); track reziser.id; let i = $index) {
+          <div class="list-item">
+            @if (editingReziserIndex === i) {
+            <div class="edit-container">
+              <mat-form-field class="flex-grow">
+                <mat-label>Meno</mat-label>
+                <input matInput [(ngModel)]="editReziserMeno" [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
+              <mat-form-field class="flex-grow">
+                <mat-label>Priezvisko</mat-label>
+                <input matInput [(ngModel)]="editReziserPriezvisko" [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
+              <button mat-icon-button color="primary" (click)="saveReziserEdit(i)" type="button">
+                <mat-icon>check</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="cancelReziserEdit()" type="button">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+            } @else {
+            <span>{{ reziser.krstneMeno }} {{ reziser.priezvisko }}</span>
+            <div class="item-actions">
+              <button mat-icon-button color="primary" (click)="startEditReziser(reziser, i)" type="button"
+                title="Upraviť">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="removeReziser(i)" type="button" title="Odstrániť">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+            }
+          </div>
+          }
+          @if (reziseri().length === 0) {
+          <div class="empty-state">
+            <mat-icon>person</mat-icon>
+            <span>Žiadni režiséri</span>
+          </div>
+          }
+        </div>
+      </div>
+      <div class="section">
+        <h3>Postavy
+          <button mat-icon-button color="primary" (click)="addPostava()" type="button" title="Pridať postavu">
+            <mat-icon>add</mat-icon>
+          </button>
+        </h3>
+        <div class="add-container" *ngIf="addingPostava">
+          <mat-form-field class="flex-grow">
+            <mat-label>Názov postavy</mat-label>
+            <input matInput [(ngModel)]="newPostavaNazov" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+          <mat-form-field class="flex-grow">
+            <mat-label>Dôležitosť</mat-label>
+            <mat-select [(ngModel)]="newPostavaDolezitost" [ngModelOptions]="{standalone: true}">
+              <mat-option value="hlavná postava">Hlavná postava</mat-option>
+              <mat-option value="vedľajšia postava">Vedľajšia postava</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="flex-grow">
+            <mat-label>Herec</mat-label>
+            <input matInput [(ngModel)]="newPostavaHerec" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+          <button mat-icon-button color="primary" (click)="confirmAddPostava()" type="button">
+            <mat-icon>check</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="cancelAddPostava()" type="button">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <div class="list-container">
+          @for (postava of postavy(); track postava.postava; let i = $index) {
+          <div class="list-item">
+            @if (editingPostavaIndex === i) {
+            <div class="edit-container">
+              <mat-form-field class="flex-grow">
+                <mat-label>Postava</mat-label>
+                <input matInput [(ngModel)]="editPostavaNazov" [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
+              <mat-form-field class="flex-grow">
+                <mat-label>Dôležitosť</mat-label>
+                <mat-select [(ngModel)]="editPostavaDolezitost" [ngModelOptions]="{standalone: true}">
+                  <mat-option value="hlavná postava">Hlavná postava</mat-option>
+                  <mat-option value="vedľajšia postava">Vedľajšia postava</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field class="flex-grow">
+                <mat-label>Herec</mat-label>
+                <input matInput [(ngModel)]="editPostavaHerec" [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
+              <button mat-icon-button color="primary" (click)="savePostavaEdit(i)" type="button">
+                <mat-icon>check</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="cancelPostavaEdit()" type="button">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+            } @else {
+            <div>
+              <strong>{{ postava.postava }}</strong> - {{ postava.dolezitost }}
+              <br>
+              <small>Herec: {{ postava.herec.krstneMeno }} {{ postava.herec.priezvisko }}</small>
+            </div>
+            <div class="item-actions">
+              <button mat-icon-button color="primary" (click)="startEditPostava(postava, i)" type="button"
+                title="Upraviť">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="removePostava(i)" type="button" title="Odstrániť">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+            }
+          </div>
+          }
+          @if (postavy().length === 0) {
+          <div class="empty-state">
+            <mat-icon>theaters</mat-icon>
+            <span>Žiadne postavy</span>
+          </div>
+          }
+        </div>
+      </div>
     </mat-card-content>
 
-    <mat-card-actions>
+    <mat-card-actions class="button-group">
       <button type="submit" mat-raised-button color="primary" [disabled]="filmModel.invalid">
-        {{ filmId ? 'Save film' : 'Add film' }}
+        {{ filmId ? 'Uložiť' : 'Pridať' }}
       </button>
-      <button type="button" mat-stroked-button color="warn" (click)="onCancel()">Cancel</button>
+      <button type="button" mat-stroked-button color="warn" (click)="onCancel()">Zrušiť</button>
     </mat-card-actions>
   </mat-card>
 </form>
